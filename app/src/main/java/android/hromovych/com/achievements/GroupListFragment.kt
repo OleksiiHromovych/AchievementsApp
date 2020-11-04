@@ -7,10 +7,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Adapter
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 class GroupListFragment : Fragment() {
@@ -30,10 +30,8 @@ class GroupListFragment : Fragment() {
         val v = inflater.inflate(R.layout.fragment_group_list, container, false)
 
         recyclerView = v.findViewById(R.id.recyclerView)
-        recyclerView.layoutManager = GridLayoutManager(
-            context, 3,
-            GridLayoutManager.VERTICAL, false
-        )
+        recyclerView.layoutManager = LinearLayoutManager(
+            context, LinearLayoutManager.VERTICAL, false)
         updateList()
         return v
     }
@@ -52,10 +50,10 @@ class GroupListFragment : Fragment() {
 
     private fun getGroups(): List<Group> {
         val groups = ArrayList<Group>()
-        groups.add(Group("First", "image"))
-        groups.add(Group("2", "image"))
-        groups.add(Group("3", "image"))
-        groups.add(Group("4", "image"))
+        groups.add(Group("First", "image", 50))
+        groups.add(Group("2", "image", 75))
+        groups.add(Group("3", "image", 35))
+        groups.add(Group("4", "image", 77))
         return groups
     }
 
@@ -63,7 +61,7 @@ class GroupListFragment : Fragment() {
         @JvmStatic
         fun newInstance() =
             GroupListFragment()
-        private val TAG = "GroupListFragment"
+        private const val TAG = "GroupListFragment"
     }
 
     private class GroupAdapter(private val context: Context, var groups: List<Group>): RecyclerView.Adapter<GroupAdapter.GroupHolder>() {
@@ -71,9 +69,15 @@ class GroupListFragment : Fragment() {
 
             val titleView: TextView = v.findViewById(R.id.group_item_title_text_view)
             val imageView: ImageView = v.findViewById(R.id.group_item_image_view)
-
+            val percentView: TextView = v.findViewById(R.id.group_item_percentTextView)
+            val progressBar: ProgressBar = v.findViewById(R.id.group_item_cupProgressBar)
+            init {
+                imageView.clipToOutline = true
+            }
             fun bind(group: Group) {
                 titleView.text = group.title
+                percentView.text = group.procent.toString()
+                progressBar.progress = group.procent
 //                imageView.setImageDrawable()
             }
 

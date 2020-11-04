@@ -7,4 +7,15 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="app_background">#DCFAED</color>
+    <color name="status_bar">#41732F</color>
+    <color name="toolbar">#5A9559</color>
+
+    <color name="item_background">#92D887</color>
+    <color name="text_hint">#F4F4F4</color>
+    <color name="group_item_border">#033709</color>
+
+    <color name="cup_progress_pass">#F2C00F</color>
+    <color name="cup_progress_left">#948F8F</color>
 </resources>
