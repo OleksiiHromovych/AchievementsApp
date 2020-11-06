@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@drawable/group_item"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@drawable/group_item">
 
     <ImageView
         android:id="@+id/group_item_image_view"
@@ -21,10 +20,10 @@
         android:id="@+id/group_item_title_text_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Title"
-        android:textStyle="bold"
         android:gravity="center"
+        android:text="Title"
         android:textSize="25sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/group_item_cupProgressBar"
         app:layout_constraintStart_toEndOf="@+id/group_item_image_view"
@@ -37,11 +36,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:minHeight="90dp"
-        android:minWidth="70dp"
         android:layout_marginBottom="16dp"
-        android:progress="50"
         android:indeterminate="false"
+        android:minWidth="70dp"
+        android:minHeight="90dp"
+        android:progress="50"
         android:progressDrawable="@drawable/progress_bar_cup"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
