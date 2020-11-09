@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Achievements</string>
+    <string name="add_main_menu">Add new group</string>
+    <string name="menu_add_achievement">Add new achievement</string>
 </resources>

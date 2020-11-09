@@ -14,7 +14,6 @@ class MainActivity : AppCompatActivity(), GroupCallbacks {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
         supportFragmentManager.beginTransaction().run {
             replace(R.id.container, GroupListFragment.newInstance())
             commit()
@@ -23,8 +22,10 @@ class MainActivity : AppCompatActivity(), GroupCallbacks {
 
     override fun onGroupClick(group: Group) {
         supportFragmentManager.beginTransaction().run {
-            replace(R.id.container, AchievementFragment.newInstance(group.id))
+            replace(R.id.container, AchievementFragment.newInstance(group.id), null)
+            addToBackStack(null)
             commit()
         }
     }
+
 }

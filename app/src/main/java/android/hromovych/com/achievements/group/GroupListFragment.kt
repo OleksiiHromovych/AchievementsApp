@@ -3,12 +3,8 @@ package android.hromovych.com.achievements.group
 import android.content.Context
 import android.hromovych.com.achievements.R
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,6 +13,11 @@ class GroupListFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
     private var adapter: GroupAdapter? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -33,8 +34,17 @@ class GroupListFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(
             context, LinearLayoutManager.VERTICAL, false
         )
-        updateList()
         return v
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateList()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        adapter = null
     }
 
     override fun onDetach() {
@@ -47,6 +57,7 @@ class GroupListFragment : Fragment() {
 
         if (adapter == null) {
             adapter = GroupAdapter(context!!, groups)
+            { group: Group -> { callbacks!!.onGroupClick(group) } }
             recyclerView.adapter = adapter
         } else {
             adapter!!.groups = groups
@@ -63,6 +74,18 @@ class GroupListFragment : Fragment() {
         return groups
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.group_list, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        Toast.makeText(activity, item.title, Toast.LENGTH_SHORT).show()
+        if (item.itemId == R.id.add_menu)
+            return true
+        return false
+    }
+
     companion object {
         @JvmStatic
         fun newInstance() =
@@ -72,46 +95,5 @@ class GroupListFragment : Fragment() {
         private var callbacks: GroupCallbacks? = null
     }
 
-    private class GroupAdapter(private val context: Context, var groups: List<Group>) :
-        RecyclerView.Adapter<GroupAdapter.GroupHolder>() {
-        class GroupHolder(v: View) : RecyclerView.ViewHolder(v), View.OnClickListener {
 
-            val titleView: TextView = v.findViewById(R.id.group_item_title_text_view)
-            val imageView: ImageView = v.findViewById(R.id.group_item_image_view)
-            val percentView: TextView = v.findViewById(R.id.group_item_percentTextView)
-            val progressBar: ProgressBar = v.findViewById(R.id.group_item_cupProgressBar)
-            val countView: TextView = v.findViewById(R.id.group_item_countTextView)
-            lateinit var group: Group
-
-            init {
-                v.setOnClickListener(this)
-            }
-
-            fun bind(group: Group) {
-                this.group = group
-                titleView.text = group.title
-                percentView.text = group.procent.toString()
-                progressBar.progress = group.procent
-                countView.text = "${group.procent} / 100"
-            }
-
-            override fun onClick(v: View?) {
-                callbacks!!.onGroupClick(group)
-            }
-
-        }
-
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GroupHolder {
-            val v = LayoutInflater.from(context)
-                .inflate(R.layout.item_group_list, parent, false)
-            return GroupHolder(v);
-        }
-
-        override fun onBindViewHolder(holder: GroupHolder, position: Int) {
-            holder.bind(groups[position])
-        }
-
-        override fun getItemCount() = groups.size
-    }
 }

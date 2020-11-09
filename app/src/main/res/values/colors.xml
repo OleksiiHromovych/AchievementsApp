@@ -18,4 +18,7 @@
 
     <color name="cup_progress_pass">#F2C00F</color>
     <color name="cup_progress_left">#948F8F</color>
+
+    <color name="achievement_background">#47BA90</color>
+
 </resources>

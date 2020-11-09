@@ -1,12 +1,9 @@
 package android.hromovych.com.achievements.achievementElements
 
-import android.content.Context
 import android.hromovych.com.achievements.R
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
+import android.view.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,7 +17,11 @@ class AchievementFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
         groupID = arguments!!.getSerializable(ARG_GROUP_ID) as UUID
+        val actionBar = (activity as AppCompatActivity).supportActionBar
+        actionBar!!.setDisplayHomeAsUpEnabled(true)
+        actionBar!!.setHomeAsUpIndicator(R.drawable.ic_back)
     }
 
     override fun onCreateView(
@@ -31,11 +32,18 @@ class AchievementFragment : Fragment() {
         recyclerView = view as RecyclerView
         recyclerView.layoutManager = LinearLayoutManager(context)
 
-        updateUI()
-
         return view
     }
 
+    override fun onResume() {
+        super.onResume()
+        updateUI()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
+    }
     companion object {
         private const val ARG_GROUP_ID = "group id"
 
@@ -66,38 +74,18 @@ class AchievementFragment : Fragment() {
         return list
     }
 
-
-
-    private class AchievementAdapter(
-        private val context: Context,
-        var achievements: List<Achievement>
-    ) :
-        RecyclerView.Adapter<AchievementAdapter.AchievementHolder>() {
-        class AchievementHolder(v: View) : RecyclerView.ViewHolder(v) {
-            val titleView: TextView = v.findViewById(R.id.achievement_title)
-            val descriptionView: TextView = v.findViewById(R.id.achievement_description)
-
-            fun bind(achievement: Achievement) {
-                titleView.text = achievement.title
-                descriptionView.text = achievement.description
-            }
-        }
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AchievementHolder {
-            return AchievementHolder(
-                LayoutInflater.from(context)
-                    .inflate(R.layout.item_achievement, parent, false)
-            )
-        }
-
-        override fun onBindViewHolder(holder: AchievementHolder, position: Int) {
-            holder.bind(achievements[position])
-        }
-
-        override fun getItemCount(): Int {
-            return achievements.size
-        }
-
-
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.achievement_list, menu)
+        super.onCreateOptionsMenu(menu, inflater)
     }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId){
+            android.R.id.home -> fragmentManager!!.popBackStackImmediate()
+        }
+        return true
+    }
+
+
+
 }
