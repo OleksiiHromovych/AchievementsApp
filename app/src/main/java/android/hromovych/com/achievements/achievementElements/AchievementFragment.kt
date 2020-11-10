@@ -1,5 +1,6 @@
 package android.hromovych.com.achievements.achievementElements
 
+import android.content.Context
 import android.hromovych.com.achievements.R
 import android.os.Bundle
 import android.view.*
@@ -14,14 +15,17 @@ class AchievementFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private var adapter: AchievementAdapter? = null
     private lateinit var groupID: UUID
+    private var callbacks: AchievementCallbacks? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         groupID = arguments!!.getSerializable(ARG_GROUP_ID) as UUID
-        val actionBar = (activity as AppCompatActivity).supportActionBar
-        actionBar!!.setDisplayHomeAsUpEnabled(true)
-        actionBar!!.setHomeAsUpIndicator(R.drawable.ic_back)
+        (activity as AppCompatActivity).supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            setHomeAsUpIndicator(R.drawable.ic_back)
+
+        }
     }
 
     override fun onCreateView(
@@ -40,10 +44,26 @@ class AchievementFragment : Fragment() {
         updateUI()
     }
 
+    override fun onPause() {
+        super.onPause()
+        adapter = null
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        callbacks = context as AchievementCallbacks
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        callbacks = null
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
     }
+
     companion object {
         private const val ARG_GROUP_ID = "group id"
 
@@ -59,7 +79,9 @@ class AchievementFragment : Fragment() {
     private fun updateUI() {
         val achievements: List<Achievement> = getAchievements()
         if (adapter == null) {
-            adapter = AchievementAdapter(context!!, achievements)
+            adapter = AchievementAdapter(context!!, achievements) {
+                callbacks!!.onAchievementClick(it)
+            }
             recyclerView.adapter = adapter
         } else {
             adapter!!.achievements = achievements
@@ -70,7 +92,7 @@ class AchievementFragment : Fragment() {
     private fun getAchievements(): List<Achievement> {
         val list = mutableListOf<Achievement>()
         for (index in 1..5)
-            list.add(Achievement("Title $index", "Description $index is $groupID group"))
+            list.add(Achievement(index, "Title $index", "Description $index is $groupID group"))
         return list
     }
 
@@ -80,12 +102,9 @@ class AchievementFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId){
+        when (item.itemId) {
             android.R.id.home -> fragmentManager!!.popBackStackImmediate()
         }
         return true
     }
-
-
-
 }

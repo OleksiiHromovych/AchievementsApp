@@ -10,14 +10,22 @@ import androidx.recyclerview.widget.RecyclerView
 
 class AchievementAdapter(
     private val context: Context,
-    var achievements: List<Achievement>
+    var achievements: List<Achievement>,
+    private val clickAchievement: (Achievement) -> Unit
 ) :
     RecyclerView.Adapter<AchievementAdapter.AchievementHolder>() {
-    class AchievementHolder(v: View) : RecyclerView.ViewHolder(v) {
+
+    class AchievementHolder(v: View, private val clickAchievement:(Achievement) ->  Unit) : RecyclerView.ViewHolder(v) {
         private val titleView: TextView = v.findViewById(R.id.achievement_title)
         private val descriptionView: TextView = v.findViewById(R.id.achievement_description)
+        private lateinit var achievement: Achievement
+
+        init {
+            v.setOnClickListener{clickAchievement(achievement)}
+        }
 
         fun bind(achievement: Achievement) {
+            this.achievement = achievement
             titleView.text = achievement.title
             descriptionView.text = achievement.description
         }
@@ -26,7 +34,7 @@ class AchievementAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AchievementHolder {
         return AchievementHolder(
             LayoutInflater.from(context)
-                .inflate(R.layout.item_achievement, parent, false)
+                .inflate(R.layout.item_achievement, parent, false), clickAchievement
         )
     }
 

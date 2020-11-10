@@ -80,10 +80,11 @@ class GroupListFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        Toast.makeText(activity, item.title, Toast.LENGTH_SHORT).show()
-        if (item.itemId == R.id.add_menu)
-            return true
-        return false
+        when (item.itemId) {
+            else -> Toast.makeText(activity, item.title, Toast.LENGTH_SHORT).show()
+
+        }
+        return true
     }
 
     companion object {
