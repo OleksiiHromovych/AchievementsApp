@@ -1,7 +1,8 @@
 package android.hromovych.com.achievements.group
 
-import java.util.*
-
-data class Group(var title: String, var image: String, var procent: Int) {
-    val id: UUID = UUID.randomUUID()
+class Group {
+    var id: Long = -1
+    var title: String? = null
+    var image: String? = null
+    var percent: Int = 50
 }

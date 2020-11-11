@@ -2,25 +2,25 @@ package android.hromovych.com.achievements.achievementElements
 
 import android.content.Context
 import android.hromovych.com.achievements.R
+import android.hromovych.com.achievements.database.BaseLab
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import java.util.*
 
 class AchievementFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
     private var adapter: AchievementAdapter? = null
-    private lateinit var groupID: UUID
+    private var groupID: Long = -1
     private var callbacks: AchievementCallbacks? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        groupID = arguments!!.getSerializable(ARG_GROUP_ID) as UUID
+        groupID = arguments!!.getLong(ARG_GROUP_ID)
         (activity as AppCompatActivity).supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
             setHomeAsUpIndicator(R.drawable.ic_back)
@@ -68,10 +68,10 @@ class AchievementFragment : Fragment() {
         private const val ARG_GROUP_ID = "group id"
 
         @JvmStatic
-        fun newInstance(groupId: UUID) =
+        fun newInstance(groupId: Long) =
             AchievementFragment().apply {
                 arguments = Bundle().apply {
-                    putSerializable(ARG_GROUP_ID, groupId)
+                    putLong(ARG_GROUP_ID, groupId)
                 }
             }
     }
@@ -90,9 +90,7 @@ class AchievementFragment : Fragment() {
     }
 
     private fun getAchievements(): List<Achievement> {
-        val list = mutableListOf<Achievement>()
-        for (index in 1..5)
-            list.add(Achievement(index, "Title $index", "Description $index is $groupID group"))
+        val list = BaseLab(context).getAchievements(groupID)
         return list
     }
 
@@ -104,6 +102,11 @@ class AchievementFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> fragmentManager!!.popBackStackImmediate()
+            R.id.add_menu -> {
+                val achievement = Achievement(groupID)
+                BaseLab(context).addAchievement(achievement)
+                callbacks!!.onAchievementClick(achievement)
+            }
         }
         return true
     }

@@ -32,9 +32,9 @@ class GroupAdapter(private val context: Context, var groups: List<Group>,
         fun bind(group: Group) {
             this.group = group
             titleView.text = group.title
-            percentView.text = group.procent.toString()
-            progressBar.progress = group.procent
-            countView.text = "${group.procent} / 100"
+            percentView.text = group.percent.toString()
+            progressBar.progress = group.percent
+            countView.text = "${group.percent} / 100"
         }
 
         override fun onClick(v: View?) {itemClickListener(group).invoke()}
@@ -44,7 +44,7 @@ class GroupAdapter(private val context: Context, var groups: List<Group>,
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GroupHolder {
         val v = LayoutInflater.from(context)
             .inflate(R.layout.item_group_list, parent, false)
-        return GroupHolder(v, itemClickListener);
+        return GroupHolder(v, itemClickListener)
     }
 
     override fun onBindViewHolder(holder: GroupHolder, position: Int) {

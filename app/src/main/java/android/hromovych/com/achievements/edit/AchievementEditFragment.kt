@@ -1,24 +1,26 @@
 package android.hromovych.com.achievements.edit
 
 import android.hromovych.com.achievements.R
+import android.hromovych.com.achievements.database.BaseLab
 import android.os.Bundle
 import android.view.*
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 
 private const val ARG_ACHIEVEMENT_ID = "achievement id"
 
 
 class AchievementEditFragment : Fragment() {
-    private var id: Int? = null
+    private var id: Long = -1
     private lateinit var title: EditText
     private lateinit var description: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            id = it.getInt(ARG_ACHIEVEMENT_ID)
+            id = it.getLong(ARG_ACHIEVEMENT_ID)
         }
         setHasOptionsMenu(true)
 
@@ -40,16 +42,21 @@ class AchievementEditFragment : Fragment() {
     }
 
     private fun updateData() {
-        title.setText("Title $id")
-        description.setText("Description $id")
+        val achievement = BaseLab(context).getAchievement(id)
+        title.setText(achievement.title)
+        description.setText(achievement.description)
+
+        (activity as AppCompatActivity).supportActionBar?.apply {
+            title = achievement.groupId.toString()
+        }
     }
 
     companion object {
         @JvmStatic
-        fun newInstance(id: Int) =
+        fun newInstance(id: Long) =
             AchievementEditFragment().apply {
                 arguments = Bundle().apply {
-                    putInt(ARG_ACHIEVEMENT_ID, id)
+                    putLong(ARG_ACHIEVEMENT_ID, id)
                 }
             }
     }

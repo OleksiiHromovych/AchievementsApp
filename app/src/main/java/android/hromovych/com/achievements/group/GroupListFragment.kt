@@ -2,6 +2,7 @@ package android.hromovych.com.achievements.group
 
 import android.content.Context
 import android.hromovych.com.achievements.R
+import android.hromovych.com.achievements.database.BaseLab
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
@@ -66,11 +67,7 @@ class GroupListFragment : Fragment() {
     }
 
     private fun getGroups(): List<Group> {
-        val groups = ArrayList<Group>()
-        groups.add(Group("First", "image", 50))
-        groups.add(Group("2", "image", 75))
-        groups.add(Group("3", "image", 35))
-        groups.add(Group("4", "image", 77))
+        val groups = BaseLab(context).getGroups()
         return groups
     }
 
