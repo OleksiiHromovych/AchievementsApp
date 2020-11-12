@@ -6,4 +6,5 @@ class Achievement(var groupId: Long) {
     var image: String? = null
     var title: String? = null
     var description: String? = null
+    var completed: Boolean = false
 }

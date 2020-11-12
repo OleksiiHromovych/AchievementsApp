@@ -1,10 +1,13 @@
 package android.hromovych.com.achievements.group
 
+import android.app.Dialog
 import android.content.Context
 import android.hromovych.com.achievements.R
 import android.hromovych.com.achievements.database.BaseLab
 import android.os.Bundle
 import android.view.*
+import android.widget.Button
+import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -78,6 +81,13 @@ class GroupListFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.add_menu -> {
+                updateGroupDialog(Group()) {
+                    BaseLab(context).addGroup(it)
+                    updateList()
+                }
+
+            }
             else -> Toast.makeText(activity, item.title, Toast.LENGTH_SHORT).show()
 
         }
@@ -93,5 +103,22 @@ class GroupListFragment : Fragment() {
         private var callbacks: GroupCallbacks? = null
     }
 
+    private fun updateGroupDialog(group: Group, okListener: (Group) -> Unit) {
+        val dialog = Dialog(context!!, R.style.Theme_Dialog)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.dialog_new_group)
+
+        val title = dialog.findViewById<EditText>(R.id.title_view).apply { setText(group.title) }
+        dialog.findViewById<Button>(R.id.cancel_button).setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.findViewById<Button>(R.id.ok_button).setOnClickListener {
+            group.title = title.text.toString()
+            okListener(group)
+            dialog.dismiss()
+        }
+        dialog.show()
+    }
 
 }

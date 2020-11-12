@@ -19,6 +19,7 @@ class AchievementAdapter(
         private val titleView: TextView = v.findViewById(R.id.achievement_title)
         private val descriptionView: TextView = v.findViewById(R.id.achievement_description)
         private lateinit var achievement: Achievement
+        private val view = v
 
         init {
             v.setOnClickListener{clickAchievement(achievement)}
@@ -28,6 +29,9 @@ class AchievementAdapter(
             this.achievement = achievement
             titleView.text = achievement.title
             descriptionView.text = achievement.description
+
+            if (achievement.completed)
+                view.setBackgroundColor(R.color.achievement_completed_background)
         }
     }
 

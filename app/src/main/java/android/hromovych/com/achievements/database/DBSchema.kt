@@ -20,5 +20,6 @@ object DBSchema {
         const val COL_DESCRIPTION = "description"
         const val COL_IMAGE = "image"
         const val COL_COLOR = "color"
+        const val COL_COMPLETED = "completed"
     }
 }

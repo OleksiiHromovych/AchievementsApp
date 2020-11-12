@@ -20,5 +20,7 @@
     <color name="cup_progress_left">#948F8F</color>
 
     <color name="achievement_background">#47BA90</color>
+    <color name="cancel">#EC3E32</color>
+    <color name="achievement_completed_background">#888888</color>
 
 </resources>

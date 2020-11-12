@@ -24,6 +24,7 @@ class AchievementFragment : Fragment() {
         (activity as AppCompatActivity).supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
             setHomeAsUpIndicator(R.drawable.ic_back)
+            title = BaseLab(context).getGroup(groupID).title
 
         }
     }
@@ -104,7 +105,7 @@ class AchievementFragment : Fragment() {
             android.R.id.home -> fragmentManager!!.popBackStackImmediate()
             R.id.add_menu -> {
                 val achievement = Achievement(groupID)
-                BaseLab(context).addAchievement(achievement)
+                achievement.id = BaseLab(context).addAchievement(achievement)
                 callbacks!!.onAchievementClick(achievement)
             }
         }

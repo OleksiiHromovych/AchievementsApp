@@ -21,17 +21,25 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_alignParentStart="true"
-            android:contentDescription="@string/image_content_description"
-            android:background="@mipmap/ic_launcher" />
+            android:background="@mipmap/ic_launcher"
+            android:contentDescription="@string/image_content_description" />
 
         <Button
             android:id="@+id/achievement_color"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_alignParentEnd="true"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="5dp"
+            android:layout_toEndOf="@id/achievement_image"
             android:background="@color/white" />
 
+        <CheckBox
+            android:id="@+id/completed_cb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:gravity="center_vertical"
+            android:text="Completed" />
     </RelativeLayout>
 
     <EditText
