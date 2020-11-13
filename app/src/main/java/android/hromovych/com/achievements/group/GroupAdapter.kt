@@ -2,6 +2,7 @@ package android.hromovych.com.achievements.group
 
 import android.content.Context
 import android.hromovych.com.achievements.R
+import android.hromovych.com.achievements.database.BaseLab
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import kotlin.math.roundToInt
 
 class GroupAdapter(private val context: Context, var groups: List<Group>,
                    private val itemClickListener: (Group) -> () -> Unit
@@ -29,12 +31,14 @@ class GroupAdapter(private val context: Context, var groups: List<Group>,
             v.setOnClickListener(this)
         }
 
-        fun bind(group: Group) {
+        fun bind(group: Group, completeAmount: Int, fullAmount: Int) {
             this.group = group
             titleView.text = group.title
-            percentView.text = group.percent.toString()
-            progressBar.progress = group.percent
-            countView.text = "${group.percent} / 100"
+
+            val percent = (completeAmount / fullAmount.toFloat() * 100).roundToInt()
+            percentView.text = percent.toString()
+            progressBar.progress = percent
+            countView.text = "$completeAmount / $fullAmount"
         }
 
         override fun onClick(v: View?) {itemClickListener(group).invoke()}
@@ -48,7 +52,12 @@ class GroupAdapter(private val context: Context, var groups: List<Group>,
     }
 
     override fun onBindViewHolder(holder: GroupHolder, position: Int) {
-        holder.bind(groups[position])
+        val lab = BaseLab(context)
+        val group = groups[position]
+        holder.bind(group,
+            lab.getAchievements(groupId = group.id, completed = true).size,
+            lab.getAchievements(groupId = group.id).size
+        )
     }
 
     override fun getItemCount() = groups.size

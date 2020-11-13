@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/item_background">
+    android:background="@color/edit_achievement_background">
 
     <TextView
         android:id="@+id/textView"
@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="Create new group"
+        android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,7 +22,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Title"
+        android:gravity="center"
         android:inputType="textCapSentences"
+        android:padding="5dp"
+        android:layout_margin="25dp"
+        android:background="@color/edit_achievement_item"
         android:maxEms="30"
         android:textColorHint="@color/text_hint"
         app:layout_constraintEnd_toEndOf="parent"
@@ -31,7 +36,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="5dp"
+        android:padding="10dp"
+        android:layout_marginTop="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -52,7 +58,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"
-            android:background="@color/item_background"
+            android:background="@color/edit_achievement_item"
             android:text="Cancel"
             android:textColor="@color/cancel"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -64,7 +70,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:background="@color/item_background"
+            android:background="@color/edit_achievement_item"
             android:text="Ok"
             android:textColor="@color/text_hint"
             app:layout_constraintBottom_toBottomOf="parent"

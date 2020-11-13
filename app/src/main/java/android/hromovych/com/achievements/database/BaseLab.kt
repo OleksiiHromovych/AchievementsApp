@@ -55,7 +55,28 @@ class BaseLab(private val context: Context?) {
             arrayOf(groupId.toString()),
             null,
             null,
-            "${DBSchema.AchievementTable.COL_COMPLETED} desc"
+            DBSchema.AchievementTable.COL_COMPLETED
+        )
+
+        with(cursor) {
+            while (moveToNext()) {
+                achievements.add(cursor.getAchievement())
+            }
+        }
+
+        return achievements
+    }
+    fun getAchievements(groupId: Long, completed: Boolean): MutableList<Achievement> {
+        val achievements = mutableListOf<Achievement>()
+
+        val cursor = db.query(
+            DBSchema.AchievementTable.TABLE_NAME,
+            null,
+            "${DBSchema.AchievementTable.COL_GROUP_ID} = ? and ${DBSchema.AchievementTable.COL_COMPLETED} = ?",
+            arrayOf(groupId.toString(), completed.toDatabaseString()),
+            null,
+            null,
+            DBSchema.AchievementTable.COL_COMPLETED
         )
 
         with(cursor) {
@@ -163,4 +184,8 @@ private fun Achievement.getContentValues(): ContentValues {
         put(DBSchema.AchievementTable.COL_COMPLETED, achievement.completed)
 
     }
+}
+
+fun Boolean.toDatabaseString(): String{
+    return if (this)  "1" else "0"
 }

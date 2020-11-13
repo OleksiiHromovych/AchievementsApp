@@ -31,7 +31,7 @@ class AchievementAdapter(
             descriptionView.text = achievement.description
 
             if (achievement.completed)
-                view.setBackgroundColor(R.color.achievement_completed_background)
+                view.setBackgroundResource(R.drawable.achievement_completed_item)
         }
     }
 

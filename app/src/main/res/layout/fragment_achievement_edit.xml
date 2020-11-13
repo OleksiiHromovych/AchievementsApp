@@ -1,77 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+ <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:layout_gravity="center"
-    android:background="@drawable/achievement_item"
+    android:background="@drawable/achievement_edit_background"
     android:padding="20dp">
 
-    <RelativeLayout
-        android:id="@+id/relative_layout"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/achievement_description">
+        android:layout_gravity="center"
+        android:background="@android:color/transparent">
 
-        <ImageButton
-            android:id="@+id/achievement_image"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_alignParentStart="true"
-            android:background="@mipmap/ic_launcher"
-            android:contentDescription="@string/image_content_description" />
-
-        <Button
-            android:id="@+id/achievement_color"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="5dp"
-            android:layout_toEndOf="@id/achievement_image"
-            android:background="@color/white" />
-
-        <CheckBox
-            android:id="@+id/completed_cb"
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/relative_layout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:gravity="center_vertical"
-            android:text="Completed" />
-    </RelativeLayout>
+            android:layout_marginTop="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/achievement_description">
 
-    <EditText
-        android:id="@+id/achievement_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:background="@color/item_background"
-        android:hint="Title"
-        android:textAlignment="center"
-        android:textColorHint="@color/text_hint"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+            <ImageButton
+                android:id="@+id/achievement_image"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@mipmap/ic_launcher"
+                android:contentDescription="@string/image_content_description"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/achievement_description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:background="@color/item_background"
-        android:hint="Description"
-        android:minHeight="50dp"
-        android:textColorHint="@color/text_hint"
-        app:layout_constraintBottom_toTopOf="@id/relative_layout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/achievement_title" />
+            <Button
+                android:id="@+id/achievement_color"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="10dp"
+                android:background="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/achievement_image"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <CheckBox
+                android:id="@+id/completed_cb"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:backgroundTint="@color/text_hint"
+                android:layout_alignParentEnd="true"
+                android:background="?android:attr/listChoiceIndicatorMultiple"
+                android:button="@null"
+                android:gravity="center_vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:gravity="center"
+                android:textColor="@color/text_hint"
+                android:text="Complited"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/completed_cb"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <EditText
+            android:id="@+id/achievement_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/edit_achievement_item"
+            android:hint="Title"
+            android:inputType="textCapSentences"
+            android:maxLength="20"
+            android:textAlignment="center"
+            android:textColorHint="@color/text_hint"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/achievement_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:padding="5dp"
+            android:background="@color/edit_achievement_item"
+            android:hint="Description"
+            android:inputType="textCapSentences"
+            android:maxLength="50"
+            android:minHeight="50dp"
+            android:textColorHint="@color/text_hint"
+            app:layout_constraintBottom_toTopOf="@id/relative_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/achievement_title" />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>
