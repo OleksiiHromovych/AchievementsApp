@@ -4,5 +4,4 @@ class Group {
     var id: Long = -1
     var title: String? = null
     var image: String? = null
-    var percent: Int = 50
 }

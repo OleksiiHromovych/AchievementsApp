@@ -11,11 +11,7 @@ class BaseLab(private val context: Context?) {
     private var db: SQLiteDatabase = DataBaseHelper(context).writableDatabase
 
     fun addGroup(group: Group) {
-        val values = ContentValues().apply {
-            put(DBSchema.GroupTable.COL_TITLE, group.title)
-            put(DBSchema.GroupTable.COL_IMAGE, group.image)
-        }
-        db.insert(DBSchema.GroupTable.TABLE_NAME, null, values)
+        db.insert(DBSchema.GroupTable.TABLE_NAME, null, group.getContentValues())
     }
 
     fun getGroups(): MutableList<Group> {
@@ -66,6 +62,7 @@ class BaseLab(private val context: Context?) {
 
         return achievements
     }
+
     fun getAchievements(groupId: Long, completed: Boolean): MutableList<Achievement> {
         val achievements = mutableListOf<Achievement>()
 
@@ -133,14 +130,45 @@ class BaseLab(private val context: Context?) {
         arrayOf(id.toString())
     )
 
-    fun updateAchievement(achievement: Achievement) = db.update(
+     fun deleteAchievements(groupId: Long) = db.delete(
             DBSchema.AchievementTable.TABLE_NAME,
-            achievement.getContentValues(),
-            "${DBSchema.AchievementTable.COL_ID} = ?",
-            arrayOf(achievement.id.toString())
+            "${DBSchema.AchievementTable.COL_GROUP_ID} = ?",
+            arrayOf(groupId.toString())
         )
 
+
+    fun updateAchievement(achievement: Achievement) = db.update(
+        DBSchema.AchievementTable.TABLE_NAME,
+        achievement.getContentValues(),
+        "${DBSchema.AchievementTable.COL_ID} = ?",
+        arrayOf(achievement.id.toString())
+    )
+
+    fun updateGroup(group: Group) = db.update(
+        DBSchema.GroupTable.TABLE_NAME,
+        group.getContentValues(),
+        "${DBSchema.GroupTable.COL_ID} = ?",
+        arrayOf(group.id.toString())
+    )
+
+    fun deleteGroupFull(id: Long) {
+        deleteAchievements(id)
+        deleteGroup(id)
+    }
+
+    private fun deleteGroup(id: Long) = db.delete(
+        DBSchema.GroupTable.TABLE_NAME,
+        "${DBSchema.GroupTable.COL_ID} = ?",
+        arrayOf(id.toString())
+    )
+
 }
+
+private fun Group.getContentValues(): ContentValues? = ContentValues().apply {
+    put(DBSchema.GroupTable.COL_TITLE, this@getContentValues.title)
+    put(DBSchema.GroupTable.COL_IMAGE, this@getContentValues.image)
+}
+
 
 private fun Cursor.getAchievement(): Achievement {
     val _id = getLong(getColumnIndex(DBSchema.AchievementTable.COL_ID))
@@ -186,6 +214,6 @@ private fun Achievement.getContentValues(): ContentValues {
     }
 }
 
-fun Boolean.toDatabaseString(): String{
-    return if (this)  "1" else "0"
+fun Boolean.toDatabaseString(): String {
+    return if (this) "1" else "0"
 }

@@ -4,10 +4,12 @@ import android.app.Dialog
 import android.content.Context
 import android.hromovych.com.achievements.R
 import android.hromovych.com.achievements.database.BaseLab
+import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.widget.Button
 import android.widget.EditText
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -60,13 +62,40 @@ class GroupListFragment : Fragment() {
         val groups: List<Group> = getGroups()
 
         if (adapter == null) {
-            adapter = GroupAdapter(context!!, groups)
-            { group: Group -> { callbacks!!.onGroupClick(group) } }
+            adapter = GroupAdapter(context!!, groups,
+                { group: Group -> { callbacks!!.onGroupClick(group) } },
+                {view: View?, group: Group -> showPopupMenu(view, group)})
             recyclerView.adapter = adapter
         } else {
             adapter!!.groups = groups
             adapter!!.notifyDataSetChanged()
         }
+    }
+
+    private fun showPopupMenu(view: View?, group: Group){
+        val popupMenu = PopupMenu(context, view, Gravity.CENTER)
+        popupMenu.inflate(R.menu.group_popupmenu)
+        popupMenu.setOnMenuItemClickListener {
+            when (it.itemId){
+                R.id.edit_menu -> {
+                    updateGroupDialog(group){updatedGroup: Group ->
+                        BaseLab(context).updateGroup(updatedGroup)
+                        updateList()
+                    }
+                    true
+                }
+                R.id.delete_menu -> {
+                    BaseLab(context).deleteGroupFull(group.id)
+                    updateList()
+                    true
+                }
+                else -> false
+            }
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            popupMenu.setForceShowIcon(true)
+        }
+        popupMenu.show()
     }
 
     private fun getGroups(): List<Group> {
