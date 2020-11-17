@@ -2,15 +2,14 @@ package android.hromovych.com.achievements.group
 
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.hromovych.com.achievements.R
 import android.hromovych.com.achievements.database.BaseLab
 import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.*
-import android.widget.Button
-import android.widget.EditText
-import android.widget.PopupMenu
-import android.widget.Toast
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -64,7 +63,7 @@ class GroupListFragment : Fragment() {
         if (adapter == null) {
             adapter = GroupAdapter(context!!, groups,
                 { group: Group -> { callbacks!!.onGroupClick(group) } },
-                {view: View?, group: Group -> showPopupMenu(view, group)})
+                { view: View?, group: Group -> showPopupMenu(view, group) })
             recyclerView.adapter = adapter
         } else {
             adapter!!.groups = groups
@@ -72,16 +71,16 @@ class GroupListFragment : Fragment() {
         }
     }
 
-    private fun showPopupMenu(view: View?, group: Group){
+    private fun showPopupMenu(view: View?, group: Group) {
         val popupMenu = PopupMenu(context, view, Gravity.CENTER)
         popupMenu.inflate(R.menu.group_popupmenu)
         popupMenu.setOnMenuItemClickListener {
-            when (it.itemId){
+            when (it.itemId) {
                 R.id.edit_menu -> {
-                    updateGroupDialog(group){updatedGroup: Group ->
+                    UpdateGroupDialog(group) { updatedGroup: Group ->
                         BaseLab(context).updateGroup(updatedGroup)
                         updateList()
-                    }
+                    }.show(fragmentManager!!, null)
                     true
                 }
                 R.id.delete_menu -> {
@@ -99,8 +98,7 @@ class GroupListFragment : Fragment() {
     }
 
     private fun getGroups(): List<Group> {
-        val groups = BaseLab(context).getGroups()
-        return groups
+        return BaseLab(context).getGroups()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -111,13 +109,12 @@ class GroupListFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.add_menu -> {
-                updateGroupDialog(Group()) {
+                UpdateGroupDialog(Group()) {
                     BaseLab(context).addGroup(it)
                     updateList()
-                }
-
+                }.show(fragmentManager!!, null)
             }
-            else -> Toast.makeText(activity, item.title, Toast.LENGTH_SHORT).show()
+            else -> Toast.makeText(activity, "${item.title} not realised", Toast.LENGTH_SHORT).show()
 
         }
         return true
@@ -130,6 +127,8 @@ class GroupListFragment : Fragment() {
 
         private const val TAG = "GroupListFragment"
         private var callbacks: GroupCallbacks? = null
+        private const val PICK_IMAGE_REQUEST_CODE = 255
+
     }
 
     private fun updateGroupDialog(group: Group, okListener: (Group) -> Unit) {
@@ -147,6 +146,23 @@ class GroupListFragment : Fragment() {
             okListener(group)
             dialog.dismiss()
         }
+
+        dialog.findViewById<ImageButton>(R.id.image_button).apply {
+            setOnClickListener {
+                val getIntent = Intent(Intent.ACTION_GET_CONTENT)
+                getIntent.type = "image/*"
+
+                val pickIntent =
+                    Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                pickIntent.type = "image/*"
+
+                val chooserIntent = Intent.createChooser(getIntent, "Select Image")
+                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(pickIntent))
+
+                startActivityForResult(chooserIntent, PICK_IMAGE_REQUEST_CODE)
+            }
+        }
+
         dialog.show()
     }
 
