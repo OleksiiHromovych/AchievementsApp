@@ -4,8 +4,11 @@ import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
+import android.graphics.drawable.BitmapDrawable
 import android.hromovych.com.achievements.R
+import android.hromovych.com.achievements.database.BaseLab
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
@@ -20,6 +23,8 @@ import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
+import java.io.ByteArrayOutputStream
+
 
 class UpdateGroupDialog(val group: Group, val okListener: (Group) -> Unit) : DialogFragment() {
     private lateinit var title: EditText
@@ -55,11 +60,18 @@ class UpdateGroupDialog(val group: Group, val okListener: (Group) -> Unit) : Dia
 
         viewInstance.findViewById<Button>(R.id.ok_button).setOnClickListener {
             group.title = title.text.toString()
+
+            val imageId = BaseLab(context).addImage(imageViewToByte(imageButton))
+            group.imageId = imageId
+
             okListener(group)
             dialog!!.dismiss()
         }
 
         imageButton = viewInstance.findViewById<ImageButton>(R.id.image_button).apply {
+            val imageBytes = group.imageId?.let { BaseLab(context).getImage(it) }
+            setImageBitmap(
+                imageBytes?.size?.let { BitmapFactory.decodeByteArray(imageBytes, 0, it) })
             setOnClickListener {
                 CropImage.activity()
                     .setGuidelines(CropImageView.Guidelines.ON)
@@ -68,23 +80,14 @@ class UpdateGroupDialog(val group: Group, val okListener: (Group) -> Unit) : Dia
                     .start(context, this@UpdateGroupDialog)
             }
         }
-//        imageButton = viewInstance.findViewById<ImageButton>(R.id.image_button).apply {
-//            setOnClickListener {
-//                val getIntent = Intent(Intent.ACTION_GET_CONTENT)
-//                getIntent.type = "image/*"
-//
-//                val pickIntent =
-//                    Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-//                pickIntent.type = "image/*"
-//
-//                val chooserIntent = Intent.createChooser(getIntent, "Select Image")
-//                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(pickIntent))
-//
-//                startActivityForResult(chooserIntent, PICK_IMAGE_REQUEST_CODE)
-//            }
-//        }
     }
 
+    fun imageViewToByte(image: ImageButton): ByteArray? {
+        val bitmap = (image.drawable as BitmapDrawable).bitmap
+        val stream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+        return stream.toByteArray()
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

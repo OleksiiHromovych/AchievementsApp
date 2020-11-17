@@ -15,7 +15,7 @@ class DataBaseHelper(var context: Context?) :
             "create table ${GroupTable.TABLE_NAME} (" +
                     "${GroupTable.COL_ID} integer primary key autoincrement, " +
                     "${GroupTable.COL_TITLE} text, " +
-                    "${GroupTable.COL_IMAGE} text)"
+                    "${GroupTable.COL_IMAGE_ID} integer)"
         )
 
         db?.execSQL(
@@ -26,7 +26,13 @@ class DataBaseHelper(var context: Context?) :
                     "${AchievementTable.COL_DESCRIPTION} text, " +
                     "${AchievementTable.COL_COLOR} text, " +
                     "${AchievementTable.COL_COMPLETED} tinyint, " +
-                    "${AchievementTable.COL_IMAGE} text)"
+                    "${AchievementTable.COL_IMAGE_ID} integer)"
+        )
+
+        db?.execSQL(
+            "create table ${DBSchema.ImageTable.TABLE_NAME} (" +
+                    "${DBSchema.ImageTable.COL_ID} integer primary key autoincrement, " +
+                    "${DBSchema.ImageTable.COL_IMAGE} blob)"
         )
 
 
@@ -35,11 +41,12 @@ class DataBaseHelper(var context: Context?) :
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
         db?.execSQL("drop table if exists ${GroupTable.TABLE_NAME}")
         db?.execSQL("drop table if exists ${AchievementTable.TABLE_NAME}")
+        db?.execSQL("drop table if exists ${DBSchema.ImageTable.TABLE_NAME}")
         onCreate(db)
     }
 
     companion object{
-        const val DATABASE_VERSION = 3
+        const val DATABASE_VERSION = 4
         const val DATABASE_NAME = "Achievement.db"
     }
 

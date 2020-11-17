@@ -162,11 +162,36 @@ class BaseLab(private val context: Context?) {
         arrayOf(id.toString())
     )
 
+    fun getImage(id: Long): ByteArray {
+        val cursor = db.query(
+            DBSchema.ImageTable.TABLE_NAME,
+            null,
+            "${DBSchema.ImageTable.COL_ID} = ?",
+            arrayOf(id.toString()),
+            null,
+            null,
+            null
+        )
+
+        with(cursor) {
+            moveToFirst()
+            return cursor.getBlob(getColumnIndex(DBSchema.ImageTable.COL_IMAGE))
+        }
+    }
+
+    fun addImage(byteArray: ByteArray?) = db.insert(
+        DBSchema.ImageTable.TABLE_NAME,
+        null,
+        ContentValues().apply {
+            put(DBSchema.ImageTable.COL_IMAGE, byteArray)
+        }
+    )
+
 }
 
 private fun Group.getContentValues(): ContentValues? = ContentValues().apply {
     put(DBSchema.GroupTable.COL_TITLE, this@getContentValues.title)
-    put(DBSchema.GroupTable.COL_IMAGE, this@getContentValues.image)
+    put(DBSchema.GroupTable.COL_IMAGE_ID, this@getContentValues.imageId)
 }
 
 
@@ -177,14 +202,14 @@ private fun Cursor.getAchievement(): Achievement {
     val _description = getString(getColumnIndex(DBSchema.AchievementTable.COL_DESCRIPTION))
     val _color = getString(getColumnIndex(DBSchema.AchievementTable.COL_COLOR))
     val _completed = getInt(getColumnIndex(DBSchema.AchievementTable.COL_COMPLETED))
-    val _image = getString(getColumnIndex(DBSchema.AchievementTable.COL_IMAGE))
+    val _image = getLong(getColumnIndex(DBSchema.AchievementTable.COL_IMAGE_ID))
 
     return Achievement(groupId = _groupID).apply {
         id = _id
         title = _title
         description = _description
         color = _color
-        image = _image
+        imageId = _image
         completed = _completed != 0
     }
 }
@@ -192,12 +217,12 @@ private fun Cursor.getAchievement(): Achievement {
 private fun Cursor.getGroup(): Group {
     val _id = getLong(getColumnIndex(DBSchema.GroupTable.COL_ID))
     val titleString = getString(getColumnIndex(DBSchema.GroupTable.COL_TITLE))
-    val imagePath = getString(getColumnIndex(DBSchema.GroupTable.COL_IMAGE))
+    val imagePath = getLong(getColumnIndex(DBSchema.GroupTable.COL_IMAGE_ID))
 
     return Group().apply {
         title = titleString
         id = _id
-        image = imagePath
+        imageId = imagePath
     }
 }
 
@@ -205,7 +230,7 @@ private fun Achievement.getContentValues(): ContentValues {
     val achievement = this
     return ContentValues().apply {
         put(DBSchema.AchievementTable.COL_TITLE, achievement.title)
-        put(DBSchema.AchievementTable.COL_IMAGE, achievement.image)
+        put(DBSchema.AchievementTable.COL_IMAGE_ID, achievement.imageId)
         put(DBSchema.AchievementTable.COL_DESCRIPTION, achievement.description)
         put(DBSchema.AchievementTable.COL_GROUP_ID, achievement.groupId)
         put(DBSchema.AchievementTable.COL_COLOR, achievement.color)

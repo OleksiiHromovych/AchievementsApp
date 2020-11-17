@@ -1,6 +1,7 @@
 package android.hromovych.com.achievements.group
 
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.hromovych.com.achievements.R
 import android.hromovych.com.achievements.database.BaseLab
 import android.view.LayoutInflater
@@ -19,7 +20,7 @@ class GroupAdapter(
 ) :
 
     RecyclerView.Adapter<GroupAdapter.GroupHolder>() {
-    class GroupHolder(
+    inner class GroupHolder(
         v: View, private var itemClickListener: (Group) -> () -> Unit,
         private var itemLongClickListener: (View?, Group) -> Unit
     ) :
@@ -40,6 +41,9 @@ class GroupAdapter(
         fun bind(group: Group, completeAmount: Int, fullAmount: Int) {
             this.group = group
             titleView.text = group.title
+
+            val imageBytes = BaseLab(context).getImage(group.imageId!!)
+            imageView.setImageBitmap(BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size))
 
             val percent = if (fullAmount == 0) 0 else (completeAmount / fullAmount.toFloat() * 100).roundToInt()
             percentView.text = percent.toString()

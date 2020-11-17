@@ -1,15 +1,13 @@
 package android.hromovych.com.achievements.group
 
-import android.app.Dialog
 import android.content.Context
-import android.content.Intent
 import android.hromovych.com.achievements.R
 import android.hromovych.com.achievements.database.BaseLab
 import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.*
-import android.widget.*
+import android.widget.PopupMenu
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -130,40 +128,4 @@ class GroupListFragment : Fragment() {
         private const val PICK_IMAGE_REQUEST_CODE = 255
 
     }
-
-    private fun updateGroupDialog(group: Group, okListener: (Group) -> Unit) {
-        val dialog = Dialog(context!!, R.style.Theme_Dialog)
-        dialog.setCancelable(false)
-        dialog.setContentView(R.layout.dialog_new_group)
-
-        val title = dialog.findViewById<EditText>(R.id.title_view).apply { setText(group.title) }
-        dialog.findViewById<Button>(R.id.cancel_button).setOnClickListener {
-            dialog.dismiss()
-        }
-
-        dialog.findViewById<Button>(R.id.ok_button).setOnClickListener {
-            group.title = title.text.toString()
-            okListener(group)
-            dialog.dismiss()
-        }
-
-        dialog.findViewById<ImageButton>(R.id.image_button).apply {
-            setOnClickListener {
-                val getIntent = Intent(Intent.ACTION_GET_CONTENT)
-                getIntent.type = "image/*"
-
-                val pickIntent =
-                    Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-                pickIntent.type = "image/*"
-
-                val chooserIntent = Intent.createChooser(getIntent, "Select Image")
-                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(pickIntent))
-
-                startActivityForResult(chooserIntent, PICK_IMAGE_REQUEST_CODE)
-            }
-        }
-
-        dialog.show()
-    }
-
 }
