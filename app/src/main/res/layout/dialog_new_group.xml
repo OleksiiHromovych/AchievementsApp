@@ -27,7 +27,7 @@
         android:padding="5dp"
         android:layout_margin="25dp"
         android:background="@color/edit_achievement_item"
-        android:maxEms="30"
+        android:maxLength="30"
         android:textColorHint="@color/text_hint"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

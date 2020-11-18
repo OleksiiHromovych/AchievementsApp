@@ -104,8 +104,12 @@ class AchievementFragment : Fragment() {
         when (item.itemId) {
             android.R.id.home -> fragmentManager!!.popBackStackImmediate()
             R.id.add_menu -> {
-                val achievement = Achievement(groupID)
-                achievement.id = BaseLab(context).addAchievement(achievement)
+                val lab = BaseLab(context)
+                val achievement =
+                    Achievement(groupID).apply {
+                        imageId = lab.getGroup(groupID).imageId
+                        id = lab.addAchievement(this)
+                    }
                 callbacks!!.onAchievementClick(achievement)
             }
         }

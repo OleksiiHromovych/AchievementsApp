@@ -1,6 +1,5 @@
 package android.hromovych.com.achievements.group
 
-import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.graphics.Bitmap
@@ -19,7 +18,6 @@ import android.view.Window
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
-import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
@@ -69,9 +67,10 @@ class UpdateGroupDialog(val group: Group, val okListener: (Group) -> Unit) : Dia
         }
 
         imageButton = viewInstance.findViewById<ImageButton>(R.id.image_button).apply {
-            val imageBytes = group.imageId?.let { BaseLab(context).getImage(it) }
-            setImageBitmap(
-                imageBytes?.size?.let { BitmapFactory.decodeByteArray(imageBytes, 0, it) })
+            val imageBytes = group.imageId.let { BaseLab(context).getImage(it) }
+            if (imageBytes.isNotEmpty())
+                setImageBitmap(BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size))
+
             setOnClickListener {
                 CropImage.activity()
                     .setGuidelines(CropImageView.Guidelines.ON)
@@ -91,21 +90,6 @@ class UpdateGroupDialog(val group: Group, val okListener: (Group) -> Unit) : Dia
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && requestCode == PICK_IMAGE_REQUEST_CODE) {
-            Toast.makeText(context, "result", Toast.LENGTH_SHORT).show()
-            val imageUri = data?.data
-            val bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                ImageDecoder.decodeBitmap(
-                    ImageDecoder.createSource(
-                        requireContext().contentResolver,
-                        imageUri!!
-                    )
-                )
-            } else {
-                MediaStore.Images.Media.getBitmap(requireContext().contentResolver, imageUri)
-            }
-            imageButton.setImageBitmap(bitmap)
-        }
         if (resultCode == RESULT_OK && requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             val result = CropImage.getActivityResult(data)
             val bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -126,7 +110,4 @@ class UpdateGroupDialog(val group: Group, val okListener: (Group) -> Unit) : Dia
         }
     }
 
-    companion object {
-        const val PICK_IMAGE_REQUEST_CODE = 255
-    }
 }

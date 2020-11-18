@@ -42,10 +42,18 @@ class GroupAdapter(
             this.group = group
             titleView.text = group.title
 
-            val imageBytes = BaseLab(context).getImage(group.imageId!!)
-            imageView.setImageBitmap(BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size))
+            val imageBytes = BaseLab(context).getImage(group.imageId)
+            if (imageBytes.isNotEmpty())
+                imageView.setImageBitmap(
+                    BitmapFactory.decodeByteArray(
+                        imageBytes,
+                        0,
+                        imageBytes.size
+                    )
+                )
 
-            val percent = if (fullAmount == 0) 0 else (completeAmount / fullAmount.toFloat() * 100).roundToInt()
+            val percent =
+                if (fullAmount == 0) 0 else (completeAmount / fullAmount.toFloat() * 100).roundToInt()
             percentView.text = percent.toString()
             progressBar.progress = percent
             countView.text = "$completeAmount / $fullAmount"

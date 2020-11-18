@@ -28,4 +28,20 @@
     <color name="edit_achievement_item">#60ACA8</color>
     <color name="edit_achievement_background">#7DBEA3</color>
 
+    <!--    Colors for image background-->
+    <color name="gold">#FFD700</color>
+    <color name="silver">#C0C0C0</color>
+    <color name="bronze">#cc6633</color>
+    <color name="blue">#2295CC</color>
+    <color name="green">#128306</color>
+    <color name="red">#911212</color>
+
+    <integer-array name="dialog_colors">
+        <item>@color/bronze</item>
+        <item>@color/silver</item>
+        <item>@color/gold</item>
+        <item>@color/blue</item>
+        <item>@color/green</item>
+        <item>@color/red</item>
+    </integer-array>
 </resources>

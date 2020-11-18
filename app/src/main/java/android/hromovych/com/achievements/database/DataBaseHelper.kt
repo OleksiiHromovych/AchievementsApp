@@ -24,7 +24,7 @@ class DataBaseHelper(var context: Context?) :
                     "${AchievementTable.COL_GROUP_ID} integer, " +
                     "${AchievementTable.COL_TITLE} text, " +
                     "${AchievementTable.COL_DESCRIPTION} text, " +
-                    "${AchievementTable.COL_COLOR} text, " +
+                    "${AchievementTable.COL_COLOR} integer, " +
                     "${AchievementTable.COL_COMPLETED} tinyint, " +
                     "${AchievementTable.COL_IMAGE_ID} integer)"
         )
@@ -46,7 +46,7 @@ class DataBaseHelper(var context: Context?) :
     }
 
     companion object{
-        const val DATABASE_VERSION = 4
+        const val DATABASE_VERSION = 5
         const val DATABASE_NAME = "Achievement.db"
     }
 

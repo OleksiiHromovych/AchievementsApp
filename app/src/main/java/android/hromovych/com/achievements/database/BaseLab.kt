@@ -174,8 +174,10 @@ class BaseLab(private val context: Context?) {
         )
 
         with(cursor) {
-            moveToFirst()
-            return cursor.getBlob(getColumnIndex(DBSchema.ImageTable.COL_IMAGE))
+            return if (moveToFirst())
+                cursor.getBlob(getColumnIndex(DBSchema.ImageTable.COL_IMAGE))
+            else
+                byteArrayOf()
         }
     }
 
@@ -200,7 +202,7 @@ private fun Cursor.getAchievement(): Achievement {
     val _groupID = getLong(getColumnIndex(DBSchema.AchievementTable.COL_GROUP_ID))
     val _title = getString(getColumnIndex(DBSchema.AchievementTable.COL_TITLE))
     val _description = getString(getColumnIndex(DBSchema.AchievementTable.COL_DESCRIPTION))
-    val _color = getString(getColumnIndex(DBSchema.AchievementTable.COL_COLOR))
+    val _color = getInt(getColumnIndex(DBSchema.AchievementTable.COL_COLOR))
     val _completed = getInt(getColumnIndex(DBSchema.AchievementTable.COL_COMPLETED))
     val _image = getLong(getColumnIndex(DBSchema.AchievementTable.COL_IMAGE_ID))
 

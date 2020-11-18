@@ -1,27 +1,40 @@
 package android.hromovych.com.achievements.edit
 
+import android.app.Activity
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.ImageDecoder
+import android.graphics.drawable.BitmapDrawable
 import android.hromovych.com.achievements.R
 import android.hromovych.com.achievements.achievementElements.Achievement
 import android.hromovych.com.achievements.database.BaseLab
+import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
-import android.widget.CheckBox
-import android.widget.EditText
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.theartofdev.edmodo.cropper.CropImage
+import com.theartofdev.edmodo.cropper.CropImageView
+import java.io.ByteArrayOutputStream
 
 private const val ARG_ACHIEVEMENT_ID = "achievement id"
 
 
 class AchievementEditFragment : Fragment() {
     private var id: Long = -1
+    private lateinit var achievement: Achievement
+
     private lateinit var title: EditText
     private lateinit var description: EditText
-    private lateinit var achievement: Achievement
     private lateinit var completedCheckBox: CheckBox
+    private lateinit var imageButton: ImageButton
+    private lateinit var colorButton: Button
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +53,14 @@ class AchievementEditFragment : Fragment() {
         // Inflate the layout for this fragment
         val v = inflater.inflate(R.layout.fragment_achievement_edit, container, false)
 
+        setup(v)
+
+        setData()
+
+        return v
+    }
+
+    private fun setup(v: View) {
         title = v.findViewById(R.id.achievement_title)
         description = v.findViewById(R.id.achievement_description)
 
@@ -77,16 +98,47 @@ class AchievementEditFragment : Fragment() {
             updateAchievement()
         }
 
-        setData()
+        imageButton = v.findViewById(R.id.achievement_image)
+        imageButton.setOnClickListener {
+            CropImage.activity()
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .setAspectRatio(1, 1)
+                .setCropShape(CropImageView.CropShape.RECTANGLE)
+                .start(context!!, this)
+        }
 
-        return v
+        colorButton = v.findViewById(R.id.achievement_color)
+        colorButton.setOnClickListener {
+            ColorDialog { color: Int ->
+                achievement.color = color
+                updateAchievement()
+                colorButton.setBackgroundColor(color)
+            }.show(fragmentManager!!, null)
+        }
     }
 
     private fun setData() {
-        val achievement = BaseLab(context).getAchievement(id)
+        val baseLab = BaseLab(context)
+        val achievement = baseLab.getAchievement(id)
+
         title.setText(achievement.title)
         description.setText(achievement.description)
         completedCheckBox.isChecked = achievement.completed
+        colorButton.setBackgroundColor(achievement.color)
+
+        val imageBytes = baseLab.getImage(achievement.imageId)
+
+        if (imageBytes.isNotEmpty())
+
+            imageButton.apply {
+                setImageBitmap(
+                    BitmapFactory.decodeByteArray(
+                        imageBytes,
+                        0,
+                        imageBytes.size
+                    )
+                )
+            }
 
         (activity as AppCompatActivity).supportActionBar?.apply {
             title = BaseLab(context).getGroup(achievement.groupId).title
@@ -123,4 +175,38 @@ class AchievementEditFragment : Fragment() {
         }
         return true
     }
+
+    fun imageViewToByte(image: ImageButton): ByteArray? {
+        val bitmap = (image.drawable as BitmapDrawable).bitmap
+        val stream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+        return stream.toByteArray()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK && requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            val result = CropImage.getActivityResult(data)
+            val bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                ImageDecoder.decodeBitmap(
+                    ImageDecoder.createSource(
+                        requireContext().contentResolver,
+                        result.uri
+                    )
+                )
+            } else {
+                MediaStore.Images.Media.getBitmap(
+                    requireContext().contentResolver, result.uri
+                )
+            }
+
+            imageButton.apply {
+                setImageBitmap(Bitmap.createScaledBitmap(bitmap, width, height, true))
+            }
+            val imageId = BaseLab(context).addImage(imageViewToByte(imageButton))
+            achievement.imageId = imageId
+            updateAchievement()
+        }
+    }
+
 }

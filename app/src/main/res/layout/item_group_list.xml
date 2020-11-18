@@ -9,7 +9,6 @@
         android:id="@+id/group_item_image_view"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:background="@drawable/image_group_mould"
         android:src="@mipmap/ic_launcher"
         android:layout_margin="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
