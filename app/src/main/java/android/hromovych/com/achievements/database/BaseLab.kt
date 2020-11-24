@@ -136,6 +136,12 @@ class BaseLab(private val context: Context?) {
             arrayOf(groupId.toString())
         )
 
+    fun deleteAchievements(idList: List<Long>) = db.delete(
+            DBSchema.AchievementTable.TABLE_NAME,
+            "${DBSchema.AchievementTable.COL_GROUP_ID} in ?",
+            arrayOf(idList.joinToString(",", "(", ")"))
+        )
+
 
     fun updateAchievement(achievement: Achievement) = db.update(
         DBSchema.AchievementTable.TABLE_NAME,

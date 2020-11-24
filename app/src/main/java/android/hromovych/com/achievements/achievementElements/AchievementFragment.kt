@@ -4,6 +4,7 @@ import android.content.Context
 import android.hromovych.com.achievements.R
 import android.hromovych.com.achievements.database.BaseLab
 import android.os.Bundle
+import android.util.SparseBooleanArray
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -16,6 +17,8 @@ class AchievementFragment : Fragment() {
     private var adapter: AchievementAdapter? = null
     private var groupID: Long = -1
     private var callbacks: AchievementCallbacks? = null
+    private var actionMode: ActionMode? = null
+    private lateinit var achievements: List<Achievement>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +39,6 @@ class AchievementFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_element_list, container, false)
         recyclerView = view as RecyclerView
         recyclerView.layoutManager = LinearLayoutManager(context)
-
         return view
     }
 
@@ -78,11 +80,14 @@ class AchievementFragment : Fragment() {
     }
 
     private fun updateUI() {
-        val achievements: List<Achievement> = getAchievements()
+        achievements = getAchievements()
         if (adapter == null) {
-            adapter = AchievementAdapter(context!!, achievements) {
+            adapter = AchievementAdapter(context!!, achievements, {
                 callbacks!!.onAchievementClick(it)
-            }
+            },
+                {
+                    onListItemSelect(it)
+                })
             recyclerView.adapter = adapter
         } else {
             adapter!!.achievements = achievements
@@ -90,9 +95,41 @@ class AchievementFragment : Fragment() {
         }
     }
 
+    private fun onListItemSelect(position: Int) {
+        val adapter = adapter!!
+        adapter.toggleSelection(position)
+
+        val hasCheckedItems = adapter.getSelectedCount() > 0
+
+        if (hasCheckedItems && actionMode == null) {
+            actionMode = (activity as AppCompatActivity).startActionMode(
+                AchievementActionModeCallback(
+                    context, adapter, achievements, this
+                )
+            )
+        } else if (!hasCheckedItems && actionMode != null)
+            actionMode?.finish()
+
+        actionMode?.title = "${adapter.getSelectedCount()} selected"
+    }
+
+    fun deleteRows() {
+        val selected: SparseBooleanArray = adapter!!.selectedItemsIds
+        val achievementsIdList = mutableListOf<Long>()
+
+        for (i in 0..selected.size()) {
+            if (selected.valueAt(i)) {
+                achievementsIdList.add(achievements[selected.keyAt(i)].id)
+            }
+        }
+
+        BaseLab(context).deleteAchievements(achievementsIdList)
+        updateUI()
+        actionMode?.finish()
+    }
+
     private fun getAchievements(): List<Achievement> {
-        val list = BaseLab(context).getAchievements(groupID)
-        return list
+        return BaseLab(context).getAchievements(groupID)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -114,5 +151,9 @@ class AchievementFragment : Fragment() {
             }
         }
         return true
+    }
+
+    fun setNullToActionMode() {
+        actionMode = null
     }
 }
