@@ -19,14 +19,25 @@
         <item name="android:popupMenuStyle">@style/PopupMenu</item>
 
         <item name="windowActionModeOverlay">true</item>
+
+        <item name="actionModeStyle">@style/MyActionModeStyle</item>
+        <item name="actionModeCloseDrawable">@drawable/ic_back</item>
+        <item name="actionMenuTextColor">@color/white</item>
     </style>
 
     <style name="Theme_Dialog" parent="ThemeOverlay.AppCompat.Dialog">
         <item name="android:windowMinWidthMajor">90%</item>
         <item name="android:windowMinWidthMinor">90%</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
     <style name="PopupMenu" parent="@android:style/Widget.PopupMenu">
         <item name="android:popupBackground">@color/item_background</item>
+    </style>
+
+    <style name="MyActionModeStyle" parent="Base.Widget.AppCompat.ActionMode">
+        <item name="background">@color/action_mode</item>
+        <item name="backgroundSplit">?attr/actionModeSplitBackground</item>
+        <item name="height">?attr/actionBarSize</item>
     </style>
 </resources>

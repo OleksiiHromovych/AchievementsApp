@@ -104,7 +104,7 @@ class AchievementFragment : Fragment() {
         if (hasCheckedItems && actionMode == null) {
             actionMode = (activity as AppCompatActivity).startActionMode(
                 AchievementActionModeCallback(
-                    context, adapter, achievements, this
+                    context, adapter, this
                 )
             )
         } else if (!hasCheckedItems && actionMode != null)

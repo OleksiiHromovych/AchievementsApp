@@ -11,6 +11,7 @@
     <color name="app_background">#DCFAED</color>
     <color name="status_bar">#41732F</color>
     <color name="toolbar">#5A9559</color>
+    <color name="action_mode">#244C23</color>
 
     <color name="item_background">#92D887</color>
     <color name="text_hint">#F4F4F4</color>

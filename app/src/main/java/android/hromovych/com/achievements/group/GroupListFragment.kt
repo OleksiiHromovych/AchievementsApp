@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.*
 import android.widget.PopupMenu
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,6 +21,9 @@ class GroupListFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        (activity as AppCompatActivity).supportActionBar?.apply {
+            setTitle(R.string.app_name)
+        }
     }
 
     override fun onAttach(context: Context) {

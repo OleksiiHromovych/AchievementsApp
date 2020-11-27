@@ -10,7 +10,6 @@ import android.widget.Toast
 class AchievementActionModeCallback(
     private val context: Context?,
     private val achievementAdapter: AchievementAdapter,
-    private val achievements: List<Achievement>,
     private val fragment: AchievementFragment
 ) : ActionMode.Callback {
 
