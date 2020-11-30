@@ -6,10 +6,24 @@
         android:icon="@drawable/ic_delete"
         android:title="Delete"
         app:showAsAction="ifRoom" />
+
     <item
-        android:id="@+id/action_copy"
-        android:icon="@drawable/ic_edit"
-        android:title="Edit"
+        android:id="@+id/action_complete"
+        android:icon="@drawable/ic_confirm"
+        android:title="complete"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_activate"
+        android:icon="@drawable/ic_deactivate"
+        android:title="Activate"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_select_all"
+        android:title="Select all"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_unselect_all"
+        android:title="Unselect all"
         app:showAsAction="ifRoom" />
 
 </menu>

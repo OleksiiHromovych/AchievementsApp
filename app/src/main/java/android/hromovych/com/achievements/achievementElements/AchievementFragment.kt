@@ -114,16 +114,47 @@ class AchievementFragment : Fragment() {
     }
 
     fun deleteRows() {
+        val achievementsIdList = getSelectedAchievementsId()
+
+        BaseLab(context).deleteAchievements(achievementsIdList)
+        updateUI()
+        actionMode?.finish()
+    }
+
+    fun selectAllAchievements(){
+        adapter?.selectAll()
+        actionMode?.title = "${adapter?.getSelectedCount()} selected"
+    }
+
+    fun unselectAllAchievements(){
+        adapter?.removeSelection()
+        actionMode?.title = "${adapter?.getSelectedCount()} selected"
+    }
+
+    private fun getSelectedAchievementsId(): MutableList<Long> {
         val selected: SparseBooleanArray = adapter!!.selectedItemsIds
         val achievementsIdList = mutableListOf<Long>()
 
-        for (i in 0..selected.size()) {
+        for (i in 0 until selected.size()) {
             if (selected.valueAt(i)) {
                 achievementsIdList.add(achievements[selected.keyAt(i)].id)
             }
         }
+        return achievementsIdList
+    }
 
-        BaseLab(context).deleteAchievements(achievementsIdList)
+    fun activateRows(){
+        val achievementsIdList = getSelectedAchievementsId()
+
+        BaseLab(context).updateAchievementsStatus(achievementsIdList, false)
+        updateUI()
+        actionMode?.finish()
+    }
+
+    fun completeRows(){
+        val achievementsIdList = getSelectedAchievementsId()
+
+        BaseLab(context).updateAchievementsStatus(achievementsIdList, true)
         updateUI()
         actionMode?.finish()
     }

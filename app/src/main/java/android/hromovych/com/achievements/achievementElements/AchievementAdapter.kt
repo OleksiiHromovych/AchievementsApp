@@ -32,12 +32,12 @@ class AchievementAdapter(
         private val view = v
 
         init {
-                v.setOnClickListener {
-                    if (selectedItemsIds.isEmpty())
-                        clickAchievement(achievement)
-                    else
-                        longClickListener(adapterPosition)
-                }
+            v.setOnClickListener {
+                if (selectedItemsIds.isEmpty())
+                    clickAchievement(achievement)
+                else
+                    longClickListener(adapterPosition)
+            }
             v.setOnLongClickListener {
                 longClickListener(adapterPosition)
                 true
@@ -106,5 +106,12 @@ class AchievementAdapter(
 
     fun getSelectedCount() = selectedItemsIds.size()
 
+    fun selectAll() {
+        selectedItemsIds.clear()
+        (achievements.indices).forEach {
+            selectedItemsIds.append(it, true)
+        }
+        notifyDataSetChanged()
+    }
 
 }

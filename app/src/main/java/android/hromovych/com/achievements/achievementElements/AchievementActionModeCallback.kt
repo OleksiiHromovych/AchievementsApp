@@ -5,7 +5,6 @@ import android.hromovych.com.achievements.R
 import android.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 
 class AchievementActionModeCallback(
     private val context: Context?,
@@ -19,8 +18,9 @@ class AchievementActionModeCallback(
     }
 
     override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-        menu?.findItem(R.id.action_delete)?.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
-        menu?.findItem(R.id.action_copy)?.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
+        menu?.findItem(R.id.action_delete)?.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
+        menu?.findItem(R.id.action_complete)?.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
+        menu?.findItem(R.id.action_activate)?.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
 
         return true
     }
@@ -28,8 +28,13 @@ class AchievementActionModeCallback(
     override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
         when (item?.itemId) {
             R.id.action_delete -> {
-                Toast.makeText(context, "delete from actionMode", Toast.LENGTH_SHORT).show()
+                fragment.deleteRows()
             }
+            R.id.action_activate -> fragment.activateRows()
+            R.id.action_complete -> fragment.completeRows()
+            R.id.action_select_all -> fragment.selectAllAchievements()
+            R.id.action_unselect_all -> fragment.unselectAllAchievements()
+            else -> throw Exception("Unknown action for action mode")
         }
 
         return true

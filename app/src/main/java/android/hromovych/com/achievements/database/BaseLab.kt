@@ -138,8 +138,8 @@ class BaseLab(private val context: Context?) {
 
     fun deleteAchievements(idList: List<Long>) = db.delete(
             DBSchema.AchievementTable.TABLE_NAME,
-            "${DBSchema.AchievementTable.COL_GROUP_ID} in ?",
-            arrayOf(idList.joinToString(",", "(", ")"))
+            "${DBSchema.AchievementTable.COL_ID} in (${idList.joinToString(",")})",
+        null
         )
 
 
@@ -148,6 +148,13 @@ class BaseLab(private val context: Context?) {
         achievement.getContentValues(),
         "${DBSchema.AchievementTable.COL_ID} = ?",
         arrayOf(achievement.id.toString())
+    )
+
+    fun updateAchievementsStatus(idList: List<Long>, completed: Boolean) = db.update(
+        DBSchema.AchievementTable.TABLE_NAME,
+        ContentValues().apply {put(DBSchema.AchievementTable.COL_COMPLETED, completed)},
+        "${DBSchema.AchievementTable.COL_ID} in (${idList.joinToString(",")})",
+        null
     )
 
     fun updateGroup(group: Group) = db.update(
