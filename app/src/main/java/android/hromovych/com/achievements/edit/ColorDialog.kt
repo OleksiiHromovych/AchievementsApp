@@ -22,7 +22,7 @@ class ColorDialog(val onItemClick: (Int) -> Unit) : DialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        val view = inflater.inflate(R.layout.dialog_color, container, false)
+        val view = inflater.inflate(R.layout.dialog_recycler_view, container, false)
 
         recyclerView = view.findViewById(R.id.recyclerView)
         recyclerView.layoutManager = GridLayoutManager(context, 3)

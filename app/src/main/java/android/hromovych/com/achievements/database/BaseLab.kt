@@ -130,17 +130,17 @@ class BaseLab(private val context: Context?) {
         arrayOf(id.toString())
     )
 
-     fun deleteAchievements(groupId: Long) = db.delete(
-            DBSchema.AchievementTable.TABLE_NAME,
-            "${DBSchema.AchievementTable.COL_GROUP_ID} = ?",
-            arrayOf(groupId.toString())
-        )
+    fun deleteAchievements(groupId: Long) = db.delete(
+        DBSchema.AchievementTable.TABLE_NAME,
+        "${DBSchema.AchievementTable.COL_GROUP_ID} = ?",
+        arrayOf(groupId.toString())
+    )
 
     fun deleteAchievements(idList: List<Long>) = db.delete(
-            DBSchema.AchievementTable.TABLE_NAME,
-            "${DBSchema.AchievementTable.COL_ID} in (${idList.joinToString(",")})",
+        DBSchema.AchievementTable.TABLE_NAME,
+        "${DBSchema.AchievementTable.COL_ID} in (${idList.joinToString(",")})",
         null
-        )
+    )
 
 
     fun updateAchievement(achievement: Achievement) = db.update(
@@ -152,7 +152,7 @@ class BaseLab(private val context: Context?) {
 
     fun updateAchievementsStatus(idList: List<Long>, completed: Boolean) = db.update(
         DBSchema.AchievementTable.TABLE_NAME,
-        ContentValues().apply {put(DBSchema.AchievementTable.COL_COMPLETED, completed)},
+        ContentValues().apply { put(DBSchema.AchievementTable.COL_COMPLETED, completed) },
         "${DBSchema.AchievementTable.COL_ID} in (${idList.joinToString(",")})",
         null
     )
@@ -202,6 +202,28 @@ class BaseLab(private val context: Context?) {
         }
     )
 
+    fun getImages(): List<Image> {
+        val images = mutableListOf<Image>()
+
+        val cursor = db.query(
+            DBSchema.ImageTable.TABLE_NAME,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+        )
+
+        with(cursor) {
+            while (moveToNext()) {
+                images.add(cursor.getImage())
+            }
+        }
+
+        return images
+    }
+
 }
 
 private fun Group.getContentValues(): ContentValues? = ContentValues().apply {
@@ -241,6 +263,13 @@ private fun Cursor.getGroup(): Group {
     }
 }
 
+private fun Cursor.getImage(): Image {
+    val id = getLong(getColumnIndex(DBSchema.ImageTable.COL_ID))
+    val image = getBlob(getColumnIndex(DBSchema.ImageTable.COL_IMAGE))
+
+    return id to image
+}
+
 private fun Achievement.getContentValues(): ContentValues {
     val achievement = this
     return ContentValues().apply {
@@ -257,3 +286,5 @@ private fun Achievement.getContentValues(): ContentValues {
 fun Boolean.toDatabaseString(): String {
     return if (this) "1" else "0"
 }
+
+typealias Image = Pair<Long, ByteArray>

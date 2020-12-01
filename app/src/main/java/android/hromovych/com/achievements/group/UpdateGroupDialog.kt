@@ -8,6 +8,7 @@ import android.graphics.ImageDecoder
 import android.graphics.drawable.BitmapDrawable
 import android.hromovych.com.achievements.R
 import android.hromovych.com.achievements.database.BaseLab
+import android.hromovych.com.achievements.dialogs.DatabaseImageDialog
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
@@ -18,6 +19,8 @@ import android.view.Window
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
@@ -28,6 +31,8 @@ class UpdateGroupDialog(val group: Group, val okListener: (Group) -> Unit) : Dia
     private lateinit var title: EditText
     private lateinit var viewInstance: View
     private lateinit var imageButton: ImageButton
+
+    private var imageBaseId: Long? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -59,7 +64,9 @@ class UpdateGroupDialog(val group: Group, val okListener: (Group) -> Unit) : Dia
         viewInstance.findViewById<Button>(R.id.ok_button).setOnClickListener {
             group.title = title.text.toString()
 
-            val imageId = BaseLab(context).addImage(imageViewToByte(imageButton))
+            val imageId = if (imageBaseId != null) imageBaseId!! else BaseLab(context).addImage(
+                imageViewToByte(imageButton)
+            )
             group.imageId = imageId
 
             okListener(group)
@@ -67,18 +74,45 @@ class UpdateGroupDialog(val group: Group, val okListener: (Group) -> Unit) : Dia
         }
 
         imageButton = viewInstance.findViewById<ImageButton>(R.id.image_button).apply {
-            val imageBytes = group.imageId.let { BaseLab(context).getImage(it) }
-            if (imageBytes.isNotEmpty())
-                setImageBitmap(BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size))
+
+            setImageFromBase(group.imageId)
 
             setOnClickListener {
-                CropImage.activity()
-                    .setGuidelines(CropImageView.Guidelines.ON)
-                    .setAspectRatio(1, 1)
-                    .setCropShape(CropImageView.CropShape.RECTANGLE)
-                    .start(context, this@UpdateGroupDialog)
+                AlertDialog.Builder(context)
+                    .setTitle("Action for image")
+                    .setPositiveButton("New") { _, _ ->
+
+                        CropImage.activity()
+                            .setGuidelines(CropImageView.Guidelines.ON)
+                            .setAspectRatio(1, 1)
+                            .setCropShape(CropImageView.CropShape.RECTANGLE)
+                            .start(context, this@UpdateGroupDialog)
+
+                    }
+
+                    .setNegativeButton("From base") { _, _ ->
+                        DatabaseImageDialog(context) {
+                            imageBaseId = it
+                            setImageFromBase(it)
+                            Toast.makeText(context, "NegativeButton", Toast.LENGTH_SHORT).show()
+                        }.show()
+                    }
+                    .create()
+                    .show()
             }
         }
+    }
+
+    private fun ImageButton.setImageFromBase(imageId: Long) {
+        val imageBytes = BaseLab(context).getImage(imageId)
+        if (imageBytes.isNotEmpty())
+            setImageBitmap(
+                BitmapFactory.decodeByteArray(
+                    imageBytes,
+                    0,
+                    imageBytes.size
+                )
+            )
     }
 
     fun imageViewToByte(image: ImageButton): ByteArray? {
