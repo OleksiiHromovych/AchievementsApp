@@ -6,5 +6,8 @@
         android:title="@string/add_main_menu"
         app:showAsAction="ifRoom"
         android:icon="@drawable/ic_add_circle"/>
-    <item android:title="group"/>
+
+    <item android:id="@+id/action_clear_media_base"
+        android:title="Clear media base"
+        app:showAsAction="never"/>
 </menu>

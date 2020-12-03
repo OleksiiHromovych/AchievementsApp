@@ -9,6 +9,8 @@ import android.graphics.drawable.BitmapDrawable
 import android.hromovych.com.achievements.R
 import android.hromovych.com.achievements.achievementElements.Achievement
 import android.hromovych.com.achievements.database.BaseLab
+import android.hromovych.com.achievements.dialogs.createImageAlertDialog
+import android.hromovych.com.achievements.setImageFromBase
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
@@ -19,7 +21,6 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.theartofdev.edmodo.cropper.CropImage
-import com.theartofdev.edmodo.cropper.CropImageView
 import java.io.ByteArrayOutputStream
 
 private const val ARG_ACHIEVEMENT_ID = "achievement id"
@@ -50,11 +51,9 @@ class AchievementEditFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         val v = inflater.inflate(R.layout.fragment_achievement_edit, container, false)
 
         setup(v)
-
         setData()
 
         return v
@@ -100,11 +99,11 @@ class AchievementEditFragment : Fragment() {
 
         imageButton = v.findViewById(R.id.achievement_image)
         imageButton.setOnClickListener {
-            CropImage.activity()
-                .setGuidelines(CropImageView.Guidelines.ON)
-                .setAspectRatio(1, 1)
-                .setCropShape(CropImageView.CropShape.RECTANGLE)
-                .start(context!!, this)
+            createImageAlertDialog(context!!, this) {
+                imageButton.setImageFromBase(it)
+                achievement.imageId = it
+                updateAchievement()
+            }.show()
         }
 
         colorButton = v.findViewById(R.id.achievement_color)

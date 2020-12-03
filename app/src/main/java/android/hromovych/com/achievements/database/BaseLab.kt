@@ -224,6 +224,9 @@ class BaseLab(private val context: Context?) {
         return images
     }
 
+    fun deleteImages() = db.delete(
+        DBSchema.ImageTable.TABLE_NAME,null, null)
+
 }
 
 private fun Group.getContentValues(): ContentValues? = ContentValues().apply {

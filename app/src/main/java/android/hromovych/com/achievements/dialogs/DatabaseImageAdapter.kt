@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.recyclerview.widget.RecyclerView
 
-class DatabaseImageAdapter(val images: List<Image>, private val onClickAction: (Long) -> Unit) : RecyclerView.Adapter<DatabaseImageAdapter.DatabaseHolder>() {
+class DatabaseImageAdapter(private val images: List<Image>, private val onClickAction: (Long) -> Unit) : RecyclerView.Adapter<DatabaseImageAdapter.DatabaseHolder>() {
     inner class DatabaseHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
 
         private val imageButton = view as ImageButton

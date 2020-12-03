@@ -3,6 +3,7 @@ package android.hromovych.com.achievements.group
 import android.content.Context
 import android.hromovych.com.achievements.R
 import android.hromovych.com.achievements.database.BaseLab
+import android.hromovych.com.achievements.toast
 import android.os.Build
 import android.os.Bundle
 import android.view.*
@@ -47,6 +48,9 @@ class GroupListFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         updateList()
+        (activity as AppCompatActivity).supportActionBar?.apply {
+            setTitle(R.string.app_name)
+        }
     }
 
     override fun onPause() {
@@ -74,7 +78,7 @@ class GroupListFragment : Fragment() {
     }
 
     private fun showPopupMenu(view: View?, group: Group) {
-        val popupMenu = PopupMenu(context, view, Gravity.CENTER)
+        val popupMenu = PopupMenu(context, view, Gravity.CENTER_HORIZONTAL)
         popupMenu.inflate(R.menu.group_popupmenu)
         popupMenu.setOnMenuItemClickListener {
             when (it.itemId) {
@@ -116,6 +120,9 @@ class GroupListFragment : Fragment() {
                     updateList()
                 }.show(fragmentManager!!, null)
             }
+            R.id.action_clear_media_base -> {
+                context.toast("${BaseLab(context).deleteImages()} image deleted")
+            }
             else -> Toast.makeText(activity, "${item.title} not realised", Toast.LENGTH_SHORT).show()
 
         }
@@ -127,9 +134,7 @@ class GroupListFragment : Fragment() {
         fun newInstance() =
             GroupListFragment()
 
-        private const val TAG = "GroupListFragment"
         private var callbacks: GroupCallbacks? = null
-        private const val PICK_IMAGE_REQUEST_CODE = 255
 
     }
 }
